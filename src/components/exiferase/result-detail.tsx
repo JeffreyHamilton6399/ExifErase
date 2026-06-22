@@ -116,7 +116,7 @@ export function ResultDetail({ item, onDownload, onNew }: ResultDetailProps) {
                   className="h-20 w-auto rounded object-contain"
                 />
               </div>
-              <div className="p-2 sm:min-h-0 sm:flex-1">
+              <div className="p-3 sm:min-h-0 sm:flex-1">
                 {item.exif && item.exif.count > 0 ? (
                   <ExifViewer exif={item.exif} />
                 ) : (
@@ -129,8 +129,8 @@ export function ResultDetail({ item, onDownload, onNew }: ResultDetailProps) {
           </section>
 
           {/* After */}
-          <section className="flex flex-col rounded-lg border border-emerald-500/30 bg-emerald-500/[0.03] sm:min-h-0 sm:overflow-hidden">
-            <div className="flex shrink-0 items-center justify-between border-b border-emerald-500/20 px-3 py-1.5">
+          <section className="flex flex-col rounded-lg border border-emerald-500/25 sm:min-h-0 sm:overflow-hidden">
+            <div className="flex shrink-0 items-center justify-between border-b px-3 py-1.5">
               <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="size-3" /> After
               </span>
@@ -141,7 +141,7 @@ export function ResultDetail({ item, onDownload, onNew }: ResultDetailProps) {
             <div className="flex flex-col sm:min-h-0 sm:flex-1">
               {/* Cleaned thumbnail — mirrors the Before thumbnail so both
                   columns read as balanced, parallel previews. */}
-              <div className="flex shrink-0 justify-center border-b border-emerald-500/15 bg-emerald-500/[0.04] p-2">
+              <div className="flex shrink-0 justify-center border-b bg-muted/30 p-2">
                 {item.cleanedUrl ? (
                   <img
                     src={item.cleanedUrl}
@@ -154,21 +154,17 @@ export function ResultDetail({ item, onDownload, onNew }: ResultDetailProps) {
                   </div>
                 )}
               </div>
-              {/* Confirmation block */}
-              <div className="flex flex-col items-center justify-center gap-2 p-3 text-center sm:min-h-0 sm:flex-1">
-                <div className="flex size-9 items-center justify-center rounded-full bg-emerald-500/10">
-                  <ShieldCheck className="size-5 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                    Metadata removed
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Image preserved · 0 bytes of metadata
-                  </p>
-                </div>
+              {/* Confirmation block — single accent (panel border + label)
+                  carries the success signal; body stays grayscale for restraint. */}
+              <div className="flex flex-col items-center justify-center gap-1 p-3 text-center sm:min-h-0 sm:flex-1">
+                <p className="text-sm font-medium text-foreground">
+                  Metadata removed
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Image preserved · 0 bytes of metadata
+                </p>
                 {item.cleanedSize != null && (
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-[11px] text-muted-foreground">
                     {item.originalSize > item.cleanedSize
                       ? `Saved ${formatBytes(item.originalSize - item.cleanedSize)}`
                       : "All identifying data removed"}

@@ -55,7 +55,7 @@ export function BatchResults({
               {withGps > 0 && (
                 <>
                   {" "}—{" "}
-                  <span className="text-rose-500">{withGps}</span> had location
+                  <span className="text-rose-600 dark:text-rose-400">{withGps}</span> had location
                   data
                 </>
               )}
@@ -98,7 +98,7 @@ export function BatchResults({
               className="flex min-h-[3.25rem] items-center gap-3 px-2.5 py-2"
             >
               {/* Thumbnail */}
-              <div className="size-9 shrink-0 overflow-hidden rounded-md border bg-muted/40">
+              <div className="size-9 shrink-0 overflow-hidden rounded-md bg-muted/50">
                 <img
                   src={item.previewUrl}
                   alt=""

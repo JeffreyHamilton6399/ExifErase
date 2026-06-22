@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MapPin, AlertTriangle } from "lucide-react";
+import { MapPin } from "lucide-react";
 import {
   categoryLabel,
   categoryOrder,
@@ -40,26 +40,23 @@ export function ExifViewer({ exif }: { exif: ExifSummary }) {
           <div key={g.category}>
             <div className="mb-1.5 flex items-center gap-1.5">
               {CATEGORY_ICONS[g.category]}
-              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <h4 className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 {categoryLabel(g.category)}
               </h4>
             </div>
-            <dl className="space-y-0.5">
+            <dl className="space-y-px">
               {g.items.map((f) => (
                 <div
                   key={f.label}
-                  className="flex items-start justify-between gap-3 rounded-md px-1.5 py-1 hover:bg-muted/40"
+                  className="flex items-baseline justify-between gap-3 py-1"
                 >
-                  <dt className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
-                    {f.sensitive && (
-                      <AlertTriangle className="size-3 shrink-0 text-amber-500" />
-                    )}
+                  <dt className="shrink-0 text-xs text-muted-foreground">
                     {f.label}
                   </dt>
                   <dd
                     className={cn(
                       "break-all text-right font-mono text-[11px]",
-                      f.sensitive ? "text-foreground" : "text-foreground/90",
+                      f.sensitive ? "text-foreground" : "text-muted-foreground",
                     )}
                   >
                     {f.value}

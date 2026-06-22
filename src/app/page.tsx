@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { ShieldCheck, EyeOff, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/exiferase/header";
 import { Footer } from "@/components/exiferase/footer";
@@ -275,19 +274,9 @@ function EmptyState({ onFiles, options, onOptionsChange }: EmptyStateProps) {
           <StripOptionsBar options={options} onChange={onOptionsChange} />
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <EyeOff className="size-3" /> No uploads
-          </span>
-          <span className="text-border">·</span>
-          <span className="flex items-center gap-1">
-            <Lock className="size-3" /> No sign-up
-          </span>
-          <span className="text-border">·</span>
-          <span className="flex items-center gap-1">
-            <ShieldCheck className="size-3 text-emerald-500" /> 100% free
-          </span>
-        </div>
+        <p className="text-center text-[11px] text-muted-foreground/60">
+          No uploads · No sign-up · 100% free
+        </p>
       </div>
     </div>
   );

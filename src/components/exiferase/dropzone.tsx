@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Upload, EyeOff } from "lucide-react";
+import { Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DropzoneProps {
@@ -61,11 +61,11 @@ export function Dropzone({ onFiles, disabled }: DropzoneProps) {
       onDragEnter={onDragOver}
       onDragLeave={onDragLeave}
       className={cn(
-        "group relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-4 py-7 text-center transition-colors sm:py-9",
+        "group relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-4 py-7 text-center transition-colors duration-150 sm:py-9",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         dragOver
-          ? "border-foreground/60 bg-muted/60"
-          : "border-border hover:border-foreground/40 hover:bg-muted/40",
+          ? "border-foreground/50 bg-muted/50"
+          : "border-border hover:border-foreground/35 hover:bg-muted/30",
         disabled && "pointer-events-none opacity-60",
       )}
     >
@@ -80,22 +80,12 @@ export function Dropzone({ onFiles, disabled }: DropzoneProps) {
           e.target.value = "";
         }}
       />
-      <div
-        className={cn(
-          "mb-2 flex size-10 items-center justify-center rounded-full border transition-colors",
-          dragOver
-            ? "border-foreground/40 bg-foreground/5"
-            : "border-border bg-muted/50 group-hover:bg-muted",
-        )}
-      >
-        <Upload className="size-4" />
-      </div>
-      <p className="text-sm font-medium">Drop photos</p>
-      <p className="mt-0.5 max-w-xs text-xs text-muted-foreground">
-        Strip GPS, camera data, and personal info — privately in your browser
+      <Upload className="mb-2 size-4 text-muted-foreground" />
+      <p className="text-sm font-medium">Drop photos to strip metadata</p>
+      <p className="mt-1 max-w-xs text-xs text-muted-foreground">
+        GPS, camera data & personal info — removed privately in your browser
       </p>
-      <p className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground/80">
-        <EyeOff className="size-3" />
+      <p className="mt-2.5 text-[11px] text-muted-foreground/60">
         or paste from clipboard
       </p>
     </div>
