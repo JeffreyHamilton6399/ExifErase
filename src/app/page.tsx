@@ -14,6 +14,7 @@ import {
   stripMetadata,
   isSupportedImage,
   downloadBlob,
+  downloadUrl,
   cleanedFilename,
 } from "@/lib/strip";
 import type { ProcessedFile, StripOptions } from "@/lib/exif-types";
@@ -175,12 +176,11 @@ export default function Page() {
     return () => window.removeEventListener("paste", onPaste);
   }, [handleFiles]);
 
-  const downloadSingle = React.useCallback(async (item: ProcessedFile) => {
+  const downloadSingle = React.useCallback((item: ProcessedFile) => {
     if (!item.cleanedUrl || !item.outputMime) return;
-    const resp = await fetch(item.cleanedUrl);
-    const blob = await resp.blob();
     const ext = item.outputMime.split("/")[1]?.replace("jpeg", "jpg") ?? "jpg";
-    downloadBlob(blob, cleanedFilename(item.filename, ext));
+    // Synchronous — preserves the tap gesture on iOS Safari (no await).
+    downloadUrl(item.cleanedUrl, cleanedFilename(item.filename, ext));
   }, []);
 
   const handleDownloadAll = React.useCallback(async () => {

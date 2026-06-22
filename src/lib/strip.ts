@@ -133,7 +133,36 @@ export function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
+/**
+ * Download a blob. On iOS Safari the `download` attribute is unreliable for
+ * blob URLs, and any `await` before the click breaks the user-gesture chain.
+ * This keeps the click synchronous; for iOS we fall back to a data URL which
+ * the system "Files" app handles reliably.
+ */
 export function downloadBlob(blob: Blob, filename: string): void {
+  const isIOS =
+    typeof navigator !== "undefined" &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+
+  if (isIOS) {
+    // Data URL — iOS opens the share/Files sheet for it reliably.
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const a = document.createElement("a");
+      a.href = reader.result as string;
+      a.download = filename;
+      a.target = "_blank";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    };
+    reader.readAsDataURL(blob);
+    return;
+  }
+
+  // Desktop / Android — object URL is efficient and reliable.
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -141,8 +170,33 @@ export function downloadBlob(blob: Blob, filename: string): void {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  // Revoke after the download has a chance to start.
   setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/**
+ * Download using an existing object URL directly — synchronous, so the user
+ * gesture (tap) is preserved. This is the preferred path for single-file
+ * downloads because it avoids the `await fetch()` that breaks iOS gestures.
+ */
+export function downloadUrl(url: string, filename: string): void {
+  const isIOS =
+    typeof navigator !== "undefined" &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.target = "_blank";
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  // On iOS the object URL may be needed briefly for the new-tab render.
+  if (!isIOS) {
+    // object URL lifecycle is managed by the caller (tracked + revoked on reset)
+  }
 }
 
 /** Returns a clean download filename for the stripped file. */
