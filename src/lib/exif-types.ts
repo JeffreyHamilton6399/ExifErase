@@ -6,6 +6,7 @@ export type ExifCategory =
   | "date"
   | "software"
   | "device"
+  | "xmp"
   | "other";
 
 export interface ExifField {

@@ -69,6 +69,32 @@ function fmtExposureTime(v: unknown): string | null {
   return `${n}s`;
 }
 
+/**
+ * Format XMP language-alternative values (dc:title, dc:description, dc:rights).
+ * exifr returns these as objects like { lang: "x-default", value: "the text" }
+ * or as arrays of such objects. Extract the human-readable value.
+ */
+function fmtLangAlt(v: unknown): string | null {
+  if (v == null) return null;
+  if (typeof v === "string") return v.trim() || null;
+  if (Array.isArray(v)) {
+    const parts = v.map((p) => fmtLangAlt(p)).filter(Boolean);
+    return parts.length ? parts.join(", ") : null;
+  }
+  if (typeof v === "object") {
+    const obj = v as Record<string, unknown>;
+    // exifr's LangAlt structure: { lang: "x-default", value: "the text" }
+    if (typeof obj["value"] === "string") return (obj["value"] as string).trim() || null;
+    // Standard LangAlt map: { "x-default": "value", "en-US": "..." }
+    const xDefault = obj["x-default"];
+    if (xDefault != null) return fmtLangAlt(xDefault);
+    const first = Object.values(obj)[0];
+    if (first != null) return fmtLangAlt(first);
+    return null;
+  }
+  return String(v);
+}
+
 function fmtFNumber(v: unknown): string | null {
   const n = Number(v);
   if (!Number.isFinite(n)) return fmt(v);
@@ -233,6 +259,76 @@ const FIELD_DEFS: FieldDef[] = [
     label: "Height",
     category: "other",
   },
+  // XMP fields (dc:, xmp:, photoshop:, Iptc4xmpCore: namespaces)
+  {
+    keys: ["title"],
+    label: "Title",
+    category: "xmp",
+    sensitive: true,
+    format: fmtLangAlt,
+  },
+  {
+    keys: ["description"],
+    label: "Description",
+    category: "xmp",
+    sensitive: true,
+    format: fmtLangAlt,
+  },
+  {
+    keys: ["subject"],
+    label: "Tags",
+    category: "xmp",
+    sensitive: true,
+  },
+  {
+    keys: ["Rating"],
+    label: "Rating",
+    category: "xmp",
+  },
+  // XMP location fields — textual place names, very sensitive
+  {
+    keys: ["City"],
+    label: "City (XMP)",
+    category: "location",
+    sensitive: true,
+  },
+  {
+    keys: ["State"],
+    label: "State (XMP)",
+    category: "location",
+    sensitive: true,
+  },
+  {
+    keys: ["Country"],
+    label: "Country (XMP)",
+    category: "location",
+    sensitive: true,
+  },
+  {
+    keys: ["Location"],
+    label: "Sub-location (XMP)",
+    category: "location",
+    sensitive: true,
+  },
+  // XMP identity fields
+  {
+    keys: ["creator"],
+    label: "Creator",
+    category: "device",
+    sensitive: true,
+  },
+  {
+    keys: ["rights"],
+    label: "Rights",
+    category: "device",
+    sensitive: true,
+    format: fmtLangAlt,
+  },
+  {
+    keys: ["CreatorTool"],
+    label: "Creator Tool",
+    category: "software",
+  },
 ];
 
 const CATEGORY_ORDER: ExifField["category"][] = [
@@ -241,6 +337,7 @@ const CATEGORY_ORDER: ExifField["category"][] = [
   "device",
   "date",
   "software",
+  "xmp",
   "other",
 ];
 
@@ -250,6 +347,7 @@ const CATEGORY_LABEL: Record<ExifField["category"], string> = {
   device: "Device & Identity",
   date: "Date & Time",
   software: "Software",
+  xmp: "XMP",
   other: "Other",
 };
 

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, FileText } from "lucide-react";
 import {
   categoryLabel,
   categoryOrder,
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 
 const CATEGORY_ICONS: Partial<Record<ExifField["category"], React.ReactNode>> = {
   location: <MapPin className="size-3" />,
+  xmp: <FileText className="size-3" />,
 };
 
 export function ExifViewer({ exif }: { exif: ExifSummary }) {
